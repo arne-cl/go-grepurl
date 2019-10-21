@@ -7,7 +7,24 @@ import (
 	"os"
 
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 )
+
+func printAnchorURL(token html.Token) {
+	for _, attrib := range token.Attr {
+		if attrib.Key == "href" {
+			fmt.Printf("%v\n", attrib.Val)
+		}
+	}
+}
+
+func printImageURL(token html.Token) {
+	for _, attrib := range token.Attr {
+		if attrib.Key == "src" {
+			fmt.Printf("%v\n", attrib.Val)
+		}
+	}
+}
 
 func main() {
 	// TODO: check if it is a file
@@ -36,19 +53,15 @@ func main() {
 			continue
 		}
 
-		// fmt.Printf("%v\n", tokenType)
-
+		token := tokenizer.Token()
 		if tokenType == html.StartTagToken {
-			token := tokenizer.Token()
-			if "a" == token.Data { // if this is an <a> element
-				for _, attrib := range token.Attr {
-					if attrib.Key == "href" {
-						fmt.Printf("%v\n", attrib.Val)
-					}
-				}
+			if token.DataAtom == atom.A { // <a> element
+				printAnchorURL(token)
+			}
+		} else if tokenType == html.SelfClosingTagToken {
+			if token.DataAtom == atom.Img { // <img /> element
+				printImageURL(token)
 			}
 		}
-
 	}
-
 }
