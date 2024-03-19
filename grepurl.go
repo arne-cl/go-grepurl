@@ -118,6 +118,11 @@ func isValidFilePath(path string) bool {
 }
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Fprintf(os.Stderr, "Usage: %s <URL or file path>\n", os.Args[0])
+		os.Exit(1)
+	}
+
 	path := os.Args[1]
 
 	var tokenizer *html.Tokenizer
